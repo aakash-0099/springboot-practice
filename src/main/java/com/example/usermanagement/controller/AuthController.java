@@ -3,6 +3,11 @@ package com.example.usermanagement.controller;
 import com.example.usermanagement.dto.CreateUserRequest;
 import com.example.usermanagement.dto.UserResponse;
 import com.example.usermanagement.service.UserService;
+import com.example.usermanagement.service.AuthService;
+import com.example.usermanagement.dto.auth.RegisterRequest;
+import com.example.usermanagement.dto.auth.LoginRequest;
+import com.example.usermanagement.dto.auth.LoginResponse;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -30,5 +35,16 @@ public class AuthController {
         return ResponseEntity
                 .status(HttpStatus.CREATED)
                 .body(response);
+    }
+
+    @PostMapping("/login")
+    public ResponseEntity<LoginResponse> login(
+            @RequestBody LoginRequest request
+    ) {
+
+        LoginResponse response =
+                authService.login(request);
+
+        return ResponseEntity.ok(response);
     }
 }

@@ -1,16 +1,13 @@
 package com.example.usermanagement.dto.auth;
 
-public class RegisterRequest {
+import com.example.usermanagement.entity.Role;
 
-    private String name;
+public class LoginRequest {
+
     private String email;
     private String password;
 
-    public RegisterRequest() {
-    }
-
-    public String getName() {
-        return name;
+    public LoginRequest() {
     }
 
     public String getEmail() {
@@ -19,10 +16,6 @@ public class RegisterRequest {
 
     public String getPassword() {
         return password;
-    }
-
-    public void setName(String name) {
-        this.name = name;
     }
 
     public void setEmail(String email) {

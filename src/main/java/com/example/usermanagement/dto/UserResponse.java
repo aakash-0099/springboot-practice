@@ -1,3 +1,8 @@
+package com.example.usermanagement.dto;
+
+import com.example.usermanagement.entity.Role;
+// import com.example.usermanagement.entity.User;
+
 public class UserResponse {
 
     private Long id;
