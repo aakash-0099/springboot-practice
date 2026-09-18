@@ -6,6 +6,7 @@ import com.example.usermanagement.entity.User;
 import com.example.usermanagement.exception.UserNotFoundException;
 import com.example.usermanagement.mapper.UserMapper;
 import com.example.usermanagement.repository.UserRepository;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -25,6 +26,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    @PreAuthorize("hasRole('ADMIN')")
     public UserResponse createUser(CreateUserRequest request) {
 
         User user = userMapper.toEntity(request);
@@ -35,6 +37,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    @PreAuthorize("hasRole('ADMIN') or #id == authentication.principal.id")
     public UserResponse getUser(Long id) {
 
         User user = userRepository.findById(id)
@@ -46,6 +49,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    @PreAuthorize("hasRole('ADMIN')")
     public List<UserResponse> getAllUsers() {
 
         return userRepository.findAll()
@@ -55,6 +59,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    @PreAuthorize("hasRole('ADMIN') or #id == authentication.principal.id")
     public UserResponse updateUser(
             Long id,
             CreateUserRequest request
@@ -74,6 +79,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    @PreAuthorize("hasRole('ADMIN')")
     public void deleteUser(Long id) {
 
         User user = userRepository.findById(id)

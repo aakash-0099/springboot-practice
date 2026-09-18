@@ -42,7 +42,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                 request.getHeader("Authorization");
 
         if (authHeader == null ||
-                !authHeader.startsWith("Bearer ")) {
+                !authHeader.startsWith("Bearer ")) {               //header does not contain a valid JWT token or empty, just continue the filter chain
 
             filterChain.doFilter(request, response);
             return;
@@ -53,7 +53,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
         if (!jwtService.isTokenValid(token)) {
 
-            filterChain.doFilter(request, response);
+            filterChain.doFilter(request, response);                //token is invalid, so we cannot authenticate the user, just continue the filter chain
             return;
         }
 
@@ -92,9 +92,11 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                 .getAuthentication();
 
         System.out.println("Authentication: " + authentication);
-        System.out.println("Principal: " + authentication.getPrincipal());
-        System.out.println("Authorities: " + authentication.getAuthorities());
-        System.out.println("Authenticated: " + authentication.isAuthenticated());
+        if (authentication != null) {
+                System.out.println("Principal: " + authentication.getPrincipal());
+                System.out.println("Authorities: " + authentication.getAuthorities());
+                System.out.println("Authenticated: " + authentication.isAuthenticated());
+        }
         filterChain.doFilter(request, response);
     }
 }

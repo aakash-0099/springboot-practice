@@ -10,6 +10,7 @@ import com.example.usermanagement.dto.auth.LoginResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import jakarta.validation.Valid;
 
 import java.net.URI;
 import java.util.List;
@@ -26,7 +27,7 @@ public class AuthController {
 
     @PostMapping("/register")
     public ResponseEntity<UserResponse> register(
-            @RequestBody RegisterRequest request
+            @Valid @RequestBody RegisterRequest request
     ) {
 
         UserResponse response =
