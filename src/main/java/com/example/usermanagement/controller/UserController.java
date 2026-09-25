@@ -5,6 +5,7 @@ import com.example.usermanagement.dto.UserResponse;
 import com.example.usermanagement.service.UserService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import jakarta.validation.Valid;
 
 import java.net.URI;
 import java.util.List;
@@ -21,7 +22,7 @@ public class UserController {
 
     @PostMapping
     public ResponseEntity<UserResponse> createUser(
-            @RequestBody CreateUserRequest request
+            @Valid @RequestBody CreateUserRequest request
     ) {
 
         UserResponse response = userService.createUser(request);
@@ -52,7 +53,7 @@ public class UserController {
     @PutMapping("/{id}")
     public ResponseEntity<UserResponse> updateUser(
             @PathVariable Long id,
-            @RequestBody CreateUserRequest request
+            @Valid @RequestBody CreateUserRequest request
     ) {
 
         UserResponse response =
