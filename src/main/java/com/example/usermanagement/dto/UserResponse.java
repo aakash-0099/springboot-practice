@@ -11,8 +11,6 @@ public class UserResponse {
     private Role role;
     private boolean enabled;
 
-    public UserResponse() {
-    }
 
     public UserResponse(
             Long id,

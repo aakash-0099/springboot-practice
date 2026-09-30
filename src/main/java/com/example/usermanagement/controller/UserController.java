@@ -1,6 +1,7 @@
 package com.example.usermanagement.controller;
 
 import com.example.usermanagement.dto.CreateUserRequest;
+import com.example.usermanagement.dto.UpdateUserRequest;
 import com.example.usermanagement.dto.UserResponse;
 import com.example.usermanagement.service.UserService;
 import org.springframework.http.ResponseEntity;
@@ -53,7 +54,7 @@ public class UserController {
     @PutMapping("/{id}")
     public ResponseEntity<UserResponse> updateUser(
             @PathVariable Long id,
-            @Valid @RequestBody CreateUserRequest request
+            @Valid @RequestBody UpdateUserRequest request
     ) {
 
         UserResponse response =

@@ -1,42 +1,26 @@
 package com.example.usermanagement.mapper;
 
 import com.example.usermanagement.dto.CreateUserRequest;
+import com.example.usermanagement.dto.auth.RegisterRequest;
 import com.example.usermanagement.dto.UserResponse;
 import com.example.usermanagement.entity.User;
-import org.springframework.stereotype.Component;
-import org.springframework.security.crypto.password.PasswordEncoder;
-import com.example.usermanagement.entity.Role;
+import org.mapstruct.Mapping;
+import org.mapstruct.Mapper;
 
-@Component
-public class UserMapper {
+@Mapper(componentModel = "spring")
+public interface UserMapper {
 
-    private final PasswordEncoder passwordEncoder;
+    UserResponse toResponse(User user);
 
-    public UserMapper(PasswordEncoder passwordEncoder) {
-        this.passwordEncoder = passwordEncoder;
-    }
+    @Mapping(target = "id", ignore = true)
+    @Mapping(target = "password", ignore = true)
+    @Mapping(target = "role", ignore = true)
+    @Mapping(target = "enabled", ignore = true)
+    User toEntity(CreateUserRequest request);
 
-    public User toEntity(CreateUserRequest request) {
-
-        User user = new User();
-
-        user.setName(request.getName());
-        user.setEmail(request.getEmail());
-        user.setPassword(passwordEncoder.encode(request.getPassword()));
-        user.setRole(Role.USER);
-        user.setEnabled(true);
-
-        return user;
-    }
-
-    public UserResponse toResponse(User user) {
-
-        return new UserResponse(
-                user.getId(),
-                user.getName(),
-                user.getEmail(),
-                user.getRole(),
-                user.isEnabled()
-        );
-    }
+    @Mapping(target = "id", ignore = true)
+    @Mapping(target = "password", ignore = true)
+    @Mapping(target = "role", ignore = true)
+    @Mapping(target = "enabled", ignore = true)
+    User toEntity(RegisterRequest request);
 }

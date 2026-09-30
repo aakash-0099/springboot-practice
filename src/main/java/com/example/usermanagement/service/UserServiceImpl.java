@@ -1,12 +1,15 @@
 package com.example.usermanagement.service;
 
 import com.example.usermanagement.dto.CreateUserRequest;
+import com.example.usermanagement.dto.UpdateUserRequest;
 import com.example.usermanagement.dto.UserResponse;
 import com.example.usermanagement.entity.User;
 import com.example.usermanagement.exception.UserNotFoundException;
 import com.example.usermanagement.mapper.UserMapper;
 import com.example.usermanagement.repository.UserRepository;
+import com.example.usermanagement.entity.Role;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -16,13 +19,16 @@ public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepository;
     private final UserMapper userMapper;
+    private final PasswordEncoder passwordEncoder;
 
     public UserServiceImpl(
-            UserRepository userRepository,
-            UserMapper userMapper
+        UserRepository userRepository,
+        UserMapper userMapper,
+        PasswordEncoder passwordEncoder
     ) {
         this.userRepository = userRepository;
         this.userMapper = userMapper;
+        this.passwordEncoder = passwordEncoder;
     }
 
     @Override
@@ -30,6 +36,10 @@ public class UserServiceImpl implements UserService {
     public UserResponse createUser(CreateUserRequest request) {
 
         User user = userMapper.toEntity(request);
+
+        user.setPassword(passwordEncoder.encode(request.getPassword()));
+        user.setRole(Role.USER);
+        user.setEnabled(true);
 
         User savedUser = userRepository.save(user);
 
@@ -62,7 +72,7 @@ public class UserServiceImpl implements UserService {
     @PreAuthorize("hasRole('ADMIN') or #id == authentication.principal.id")
     public UserResponse updateUser(
             Long id,
-            CreateUserRequest request
+            UpdateUserRequest request
     ) {
 
         User user = userRepository.findById(id)

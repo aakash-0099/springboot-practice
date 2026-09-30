@@ -1,6 +1,7 @@
 package com.example.usermanagement.service;
 
 import com.example.usermanagement.dto.CreateUserRequest;
+import com.example.usermanagement.dto.UpdateUserRequest;
 import com.example.usermanagement.dto.UserResponse;
 
 import java.util.List;
@@ -13,7 +14,7 @@ public interface UserService {
 
     List<UserResponse> getAllUsers();
 
-    UserResponse updateUser(Long id, CreateUserRequest request);
+    UserResponse updateUser(Long id, UpdateUserRequest request);
 
     void deleteUser(Long id);
 }

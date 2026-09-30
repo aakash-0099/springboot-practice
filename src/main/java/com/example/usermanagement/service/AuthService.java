@@ -23,15 +23,18 @@ public class AuthService {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
     private final JwtService jwtService;
+	private final UserMapper userMapper;
 
     public AuthService(
 		UserRepository userRepository,
 		PasswordEncoder passwordEncoder,
-			JwtService jwtService
+			JwtService jwtService,
+		UserMapper userMapper
 	) {
 			this.userRepository = userRepository;
 			this.passwordEncoder = passwordEncoder;
 			this.jwtService = jwtService;
+			this.userMapper = userMapper;
 	}
 
     public UserResponse register(RegisterRequest request) {
@@ -42,27 +45,15 @@ public class AuthService {
 			);
 			}
 
-			String encodedPassword =
-					passwordEncoder.encode(request.getPassword());
+			User user = userMapper.toEntity(request);
 
-			User user = new User(
-					null,
-					request.getName(),
-					request.getEmail(),
-					encodedPassword,
-					Role.USER,
-					true
-			);
+			user.setPassword(passwordEncoder.encode(request.getPassword()));
+			user.setRole(Role.USER);
+			user.setEnabled(true);
 
 			User savedUser = userRepository.save(user);
 
-			return new UserResponse(
-					savedUser.getId(),
-					savedUser.getName(),
-					savedUser.getEmail(),
-					savedUser.getRole(),
-					savedUser.isEnabled()
-			);
+			return userMapper.toResponse(savedUser);
 	}
 
     public LoginResponse login(LoginRequest request) {
