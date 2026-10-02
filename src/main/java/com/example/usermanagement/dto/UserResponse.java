@@ -1,8 +1,12 @@
+
 package com.example.usermanagement.dto;
 
 import com.example.usermanagement.entity.Role;
-// import com.example.usermanagement.entity.User;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
+@Data
+@NoArgsConstructor
 public class UserResponse {
 
     private Long id;
@@ -10,7 +14,6 @@ public class UserResponse {
     private String email;
     private Role role;
     private boolean enabled;
-
 
     public UserResponse(
             Long id,
@@ -24,25 +27,5 @@ public class UserResponse {
         this.email = email;
         this.role = role;
         this.enabled = enabled;
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
-    public Role getRole() {
-        return role;
-    }
-
-    public boolean isEnabled() {
-        return enabled;
     }
 }

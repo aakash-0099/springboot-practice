@@ -11,6 +11,10 @@ import com.example.usermanagement.entity.Role;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.cache.annotation.Cacheable;
+import org.springframework.cache.annotation.Caching;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -33,6 +37,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     @PreAuthorize("hasRole('ADMIN')")
+    @CacheEvict(value = "users", key = "'all'")
     public UserResponse createUser(CreateUserRequest request) {
 
         User user = userMapper.toEntity(request);
@@ -48,6 +53,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     @PreAuthorize("hasRole('ADMIN') or #id == authentication.principal.id")
+    @Cacheable(value = "users", key = "#id")
     public UserResponse getUser(Long id) {
 
         User user = userRepository.findById(id)
@@ -60,6 +66,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     @PreAuthorize("hasRole('ADMIN')")
+    @Cacheable(value = "users", key = "'all'")
     public List<UserResponse> getAllUsers() {
 
         return userRepository.findAll()
@@ -69,7 +76,12 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    @Transactional
     @PreAuthorize("hasRole('ADMIN') or #id == authentication.principal.id")
+    @Caching(evict = {
+            @CacheEvict(value = "users", key = "#id"),
+            @CacheEvict(value = "users", key = "'all'")
+    })
     public UserResponse updateUser(
             Long id,
             UpdateUserRequest request
@@ -90,6 +102,10 @@ public class UserServiceImpl implements UserService {
 
     @Override
     @PreAuthorize("hasRole('ADMIN')")
+    @Caching(evict = {
+            @CacheEvict(value = "users", key = "#id"),
+            @CacheEvict(value = "users", key = "'all'")
+    })
     public void deleteUser(Long id) {
 
         User user = userRepository.findById(id)
