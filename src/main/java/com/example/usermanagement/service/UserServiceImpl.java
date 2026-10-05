@@ -8,6 +8,8 @@ import com.example.usermanagement.exception.UserNotFoundException;
 import com.example.usermanagement.mapper.UserMapper;
 import com.example.usermanagement.repository.UserRepository;
 import com.example.usermanagement.entity.Role;
+import com.example.usermanagement.entity.CacheInvalidationEvent;
+import com.example.usermanagement.repository.CacheInvalidationEventRepository;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -15,7 +17,6 @@ import org.springframework.cache.annotation.Cacheable;
 import org.springframework.cache.annotation.Caching;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.transaction.annotation.Transactional;
-
 import java.util.List;
 
 @Service
@@ -24,15 +25,18 @@ public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
     private final UserMapper userMapper;
     private final PasswordEncoder passwordEncoder;
+    private final CacheInvalidationEventRepository cacheInvalidationEventRepository;
 
     public UserServiceImpl(
         UserRepository userRepository,
         UserMapper userMapper,
-        PasswordEncoder passwordEncoder
+        PasswordEncoder passwordEncoder,
+        CacheInvalidationEventRepository cacheInvalidationEventRepository
     ) {
         this.userRepository = userRepository;
         this.userMapper = userMapper;
         this.passwordEncoder = passwordEncoder;
+        this.cacheInvalidationEventRepository = cacheInvalidationEventRepository;
     }
 
     @Override
@@ -76,29 +80,43 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    @Transactional
-    @PreAuthorize("hasRole('ADMIN') or #id == authentication.principal.id")
-    @Caching(evict = {
-            @CacheEvict(value = "users", key = "#id"),
-            @CacheEvict(value = "users", key = "'all'")
-    })
-    public UserResponse updateUser(
-            Long id,
-            UpdateUserRequest request
-    ) {
+	@Transactional
+	@PreAuthorize("hasRole('ADMIN') or #id == authentication.principal.id")
+	@Caching(evict = {
+			@CacheEvict(value = "users", key = "#id"),
+			@CacheEvict(value = "users", key = "'all'")
+	})
+	public UserResponse updateUser(
+			Long id,
+			UpdateUserRequest request
+	) {
 
-        User user = userRepository.findById(id)
-                .orElseThrow(() ->
-                        new UserNotFoundException(id)
-                );
+		User user = userRepository.findById(id)
+				.orElseThrow(() ->
+						new UserNotFoundException(id)
+				);
 
-        user.setName(request.getName());
-        user.setEmail(request.getEmail());
+		user.setName(request.getName());
+		user.setEmail(request.getEmail());
 
-        User updatedUser = userRepository.save(user);
+		User updatedUser = userRepository.save(user);
 
-        return userMapper.toResponse(updatedUser);
-    }
+		cacheInvalidationEventRepository.save(
+				new CacheInvalidationEvent(
+						"users",							// Cache name
+						String.valueOf(id)					// Cache key
+				)
+		);
+
+		cacheInvalidationEventRepository.save(
+				new CacheInvalidationEvent(
+						"users",
+						"all"
+				)
+		);
+
+		return userMapper.toResponse(updatedUser);
+	}
 
     @Override
     @PreAuthorize("hasRole('ADMIN')")
