@@ -1,4 +1,4 @@
-package com.example.usermanagement.repository;
+package com.example.usermanagement.cache;
 
 import com.example.usermanagement.entity.CacheInvalidationEvent;
 import org.springframework.data.jpa.repository.JpaRepository;

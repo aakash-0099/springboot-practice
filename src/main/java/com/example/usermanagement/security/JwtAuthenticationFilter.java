@@ -91,12 +91,12 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                 .getContext()
                 .getAuthentication();
 
-        System.out.println("Authentication: " + authentication);
-        if (authentication != null) {
-                System.out.println("Principal: " + authentication.getPrincipal());
-                System.out.println("Authorities: " + authentication.getAuthorities());
-                System.out.println("Authenticated: " + authentication.isAuthenticated());
-        }
+        // System.out.println("Authentication: " + authentication);
+        // if (authentication != null) {
+        //         System.out.println("Principal: " + authentication.getPrincipal());
+        //         System.out.println("Authorities: " + authentication.getAuthorities());
+        //         System.out.println("Authenticated: " + authentication.isAuthenticated());
+        // }
         filterChain.doFilter(request, response);
     }
 }

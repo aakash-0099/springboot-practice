@@ -1,5 +1,4 @@
-
-package com.example.usermanagement.config;
+package com.example.usermanagement.cache;
 
 import java.time.Duration;
 
@@ -25,12 +24,14 @@ public class CacheConfig implements CachingConfigurer {
 
     public CacheConfig(
             RedisCacheErrorHandler redisCacheErrorHandler) {
+
         this.redisCacheErrorHandler = redisCacheErrorHandler;
     }
 
     @Bean
     public CacheManager cacheManager(
-            RedisConnectionFactory redisConnectionFactory) {
+            RedisConnectionFactory redisConnectionFactory,
+            CacheLeaseService cacheLeaseService) {
 
         RedisCacheConfiguration cacheConfiguration =
                 RedisCacheConfiguration.defaultCacheConfig()
@@ -48,9 +49,11 @@ public class CacheConfig implements CachingConfigurer {
                 RedisCacheWriter.nonLockingRedisCacheWriter(
                         redisConnectionFactory);
 
-        return RedisCacheManager.builder(cacheWriter)
-                .cacheDefaults(cacheConfiguration)
-                .build();
+        return new LeaseAwareRedisCacheManager(
+                cacheWriter,
+                cacheConfiguration,
+                cacheLeaseService
+        );
     }
 
     @Override

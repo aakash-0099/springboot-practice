@@ -1,4 +1,4 @@
-package com.example.usermanagement.config;
+package com.example.usermanagement.cache;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

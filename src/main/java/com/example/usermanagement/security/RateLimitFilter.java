@@ -66,14 +66,14 @@ public class RateLimitFilter extends OncePerRequestFilter {
         Authentication authentication =
                 SecurityContextHolder.getContext().getAuthentication();
 
-        System.out.println("AUTHENTICATION = " + authentication);
-        System.out.println("AUTHENTICATED = " +
-                (authentication != null && authentication.isAuthenticated()));
+        // System.out.println("AUTHENTICATION = " + authentication);
+        // System.out.println("AUTHENTICATED = " +
+        //         (authentication != null && authentication.isAuthenticated()));
 
-        if (authentication != null) {
-            System.out.println("AUTH NAME = " + authentication.getName());
-            System.out.println("PRINCIPAL = " + authentication.getPrincipal());
-        }
+        // if (authentication != null) {
+        //     System.out.println("AUTH NAME = " + authentication.getName());
+        //     System.out.println("PRINCIPAL = " + authentication.getPrincipal());
+        // }
 
         if (authentication != null
                 && authentication.isAuthenticated()
@@ -82,7 +82,7 @@ public class RateLimitFilter extends OncePerRequestFilter {
             User user = (User) authentication.getPrincipal();
             String key = "user:" + user.getId();
 
-            System.out.println("RATE LIMIT KEY = " + key);
+            // System.out.println("RATE LIMIT KEY = " + key);
 
             if (!rateLimitService.isAllowed(key)) {
                 writeRateLimitResponse(response);

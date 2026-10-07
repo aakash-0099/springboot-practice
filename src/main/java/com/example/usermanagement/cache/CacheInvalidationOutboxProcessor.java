@@ -1,7 +1,7 @@
-package com.example.usermanagement.service;
+package com.example.usermanagement.cache;
 
 import com.example.usermanagement.entity.CacheInvalidationEvent;
-import com.example.usermanagement.repository.CacheInvalidationEventRepository;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.cache.Cache;
@@ -33,7 +33,7 @@ public class CacheInvalidationOutboxProcessor {
         this.redisConnectionFactory = redisConnectionFactory;
     }
 
-    @Scheduled(fixedDelay = 5000)
+    @Scheduled(fixedDelay = 100000)
     public void processEvents() {
 
         List<CacheInvalidationEvent> events =

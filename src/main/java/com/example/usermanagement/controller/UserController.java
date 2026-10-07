@@ -19,6 +19,10 @@ public class UserController {
 
     public UserController(UserService userService) {
         this.userService = userService;
+            System.out.println(
+        "USER SERVICE BEAN CLASS = "
+        + userService.getClass().getName()
+    );
     }
 
     @PostMapping
