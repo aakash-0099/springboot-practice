@@ -14,10 +14,14 @@ services:
       SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/user_management
       SPRING_DATASOURCE_USERNAME: postgres
       SPRING_DATASOURCE_PASSWORD: postgres
+      REDIS_HOST: redis
+      JWT_SECRET: some-long-local-secret-at-least-32-chars
 
     depends_on:
       postgres:
         condition: service_healthy
+      redis:
+        condition: service_started
 
   postgres:
     image: postgres:16
@@ -40,6 +44,14 @@ services:
       interval: 5s
       timeout: 5s
       retries: 10
+
+  redis:
+    image: redis:7
+
+    container_name: user-management-redis
+
+    ports:
+      - "6379:6379"
 
 volumes:
   postgres_data:
